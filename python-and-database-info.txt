@@ -1,0 +1,43 @@
+
+
+sudo apt-get install python3-pip
+sudo apt install python3.8-distutils
+sudo apt-get install python3-setuptools
+sudo apt install libcurl4-gnutls-dev librtmp-dev
+pip3 install pycurl
+
+
+========= DATABASE WORK ============================================
+
+
+CREATE DATABASE modejira;
+
+CREATE USER devel with encrypted password 'Bn67eR86%';
+ALTER USER devel WITH SUPERUSER CREATEROLE CREATEDB REPLICATION BYPASSRLS;
+
+CREATE TABLE worklog (
+    wl_id          SERIAL,
+    issue          VARCHAR(10) NOT NULL,
+    username       VARCHAR(32) NOT NULL,
+    short_username VARCHAR(16) NOT NULL,
+    last_updated   TIMESTAMP NOT NULL,
+    work_seconds   INTEGER NOT NULL
+);
+
+DROP TABLE worklog;
+
+
+CREATE TABLE issue (
+    i_id          SERIAL,
+    issue         VARCHAR(10) NOT NULL,
+    summary       VARCHAR(512) NOT NULL,
+    short_summary VARCHAR(100) NOT NULL,
+    story_points  FLOAT NOT NULL,
+    sprint        VARCHAR(8) NOT NULL
+);
+
+DROP TABLE issue;
+
+pg-cmd.sh "SELECT w.issue,w.username,w.work_seconds,i.short_summary,i.story_points,i.sprint FROM worklog w, issue i WHERE w.issue = i.issue AND w.issue = 'FD-9732'"
+
+
